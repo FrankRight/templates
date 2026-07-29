@@ -4,7 +4,11 @@
 // specialized tutors (see agents.go) based on the subject of the question.
 package tutor_agent
 
-import "agnt5.dev/sdk-go/agnt5"
+import (
+	"context"
+
+	"github.com/agnt5dev/sdk-go/agnt5"
+)
 
 type TutorChatInput struct {
 	Message string `json:"message"`
@@ -17,7 +21,12 @@ type TutorChatOutput struct {
 func TutorChatWorkflow(ctx *agnt5.Context, in TutorChatInput) (TutorChatOutput, error) {
 	ctx.Logger().Info("Tutor chat workflow", "message", in.Message)
 
-	result, err := TriageAgent.Run(ctx, agnt5.AgentInput{Message: in.Message})
+	// Wrapped in a Step so the model call is checkpointed. The triage agent may
+	// hand off to a specialist tutor, which costs a second model round-trip;
+	// without this a worker restart would re-run and re-bill both.
+	result, err := agnt5.Step(ctx, "tutor_triage", func(context.Context) (agnt5.AgentResult, error) {
+		return TriageAgent.Run(ctx, agnt5.AgentInput{Message: in.Message})
+	})
 	if err != nil {
 		ctx.Logger().Error("Error running tutor agent", "error", err)
 		return TutorChatOutput{

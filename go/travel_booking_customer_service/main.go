@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 
 	travel_booking_customer_service "travel-booking-customer-service/src/travel_booking_customer_service"
 )
@@ -35,7 +35,14 @@ func main() {
 		agnt5.WithServiceVersion("1.0.0"),
 	)
 
+	// The Go SDK has no auto-register equivalent: every agent, tool, and
+	// workflow has to be listed here explicitly.
 	must(agnt5.RegisterAgent(worker, travel_booking_customer_service.TravelBookingAgent))
+
+	must(agnt5.RegisterTool(worker, travel_booking_customer_service.SearchFlightsTool))
+	must(agnt5.RegisterTool(worker, travel_booking_customer_service.SearchHotelsTool))
+	must(agnt5.RegisterTool(worker, travel_booking_customer_service.CreateItineraryTool))
+
 	must(agnt5.RegisterWorkflow(worker, "travel_booking_workflow", travel_booking_customer_service.TravelBookingWorkflow))
 
 	if err := worker.Run(context.Background()); err != nil {

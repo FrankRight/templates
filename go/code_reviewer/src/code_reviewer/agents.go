@@ -2,7 +2,7 @@
 // and a reviewer that synthesizes structured findings into a final report.
 package code_reviewer
 
-import "agnt5.dev/sdk-go/agnt5"
+import "github.com/agnt5dev/sdk-go/agnt5"
 
 const contextBuilderPrompt = `You are the Context Builder Agent, responsible for assembling a factual, concise, and structured context for the Code Reviewer Agent.
 
@@ -77,25 +77,37 @@ var (
 	ReviewerAgent       *agnt5.Agent
 )
 
+// Package-level tools, also assigned in NewAgents(). They are exported so
+// main() can register them with agnt5.RegisterTool in addition to attaching
+// them to the agents — registration is what publishes their JSON schemas to
+// the platform and makes them invocable on their own.
+var (
+	PRFetcherTool           agnt5.Tool
+	JiraTicketFetcherTool   agnt5.Tool
+	LinearTicketFetcherTool agnt5.Tool
+	DetectTicketSourceTool  agnt5.Tool
+)
+
 // NewAgents builds the context-builder and reviewer agents and their tools.
 //
 // Note: the Go SDK has no temperature/max_tokens option on NewAgent (Python's
 // Agent(temperature=0.0, max_tokens=4096) has no equivalent here yet) —
 // omitted rather than faked.
 func NewAgents(model agnt5.LanguageModel, cfg AppConfig) error {
-	prFetcher, err := NewPRFetcherTool(cfg)
+	var err error
+	PRFetcherTool, err = NewPRFetcherTool(cfg)
 	if err != nil {
 		return err
 	}
-	jiraFetcher, err := NewJiraTicketFetcherTool(cfg)
+	JiraTicketFetcherTool, err = NewJiraTicketFetcherTool(cfg)
 	if err != nil {
 		return err
 	}
-	linearFetcher, err := NewLinearTicketFetcherTool(cfg)
+	LinearTicketFetcherTool, err = NewLinearTicketFetcherTool(cfg)
 	if err != nil {
 		return err
 	}
-	detectSource, err := NewDetectTicketSourceTool()
+	DetectTicketSourceTool, err = NewDetectTicketSourceTool()
 	if err != nil {
 		return err
 	}
@@ -103,7 +115,7 @@ func NewAgents(model agnt5.LanguageModel, cfg AppConfig) error {
 	ContextBuilderAgent, err = agnt5.NewAgent("context_builder",
 		agnt5.WithAgentModel(model),
 		agnt5.WithAgentInstructions(contextBuilderPrompt),
-		agnt5.WithAgentTools(prFetcher, jiraFetcher, linearFetcher, detectSource),
+		agnt5.WithAgentTools(PRFetcherTool, JiraTicketFetcherTool, LinearTicketFetcherTool, DetectTicketSourceTool),
 		agnt5.WithAgentMaxTurns(6),
 	)
 	if err != nil {
@@ -113,7 +125,7 @@ func NewAgents(model agnt5.LanguageModel, cfg AppConfig) error {
 	ReviewerAgent, err = agnt5.NewAgent("code_reviewer",
 		agnt5.WithAgentModel(model),
 		agnt5.WithAgentInstructions(codeReviewerPrompt),
-		agnt5.WithAgentTools(prFetcher, jiraFetcher, linearFetcher),
+		agnt5.WithAgentTools(PRFetcherTool, JiraTicketFetcherTool, LinearTicketFetcherTool),
 		agnt5.WithAgentMaxTurns(6),
 	)
 	return err

@@ -7,6 +7,7 @@ on:
     paths:
       - 'python/**'
       - 'typescript/**'
+      - 'go/**'
       - 'templates.json'
   workflow_dispatch:
     inputs:
@@ -84,6 +85,18 @@ jobs:
                               elif pattern in str(rel_path).split(os.sep):
                                   should_skip = True
                                   break
+
+                          # Never ship a real dotenv file. The exact-match loop
+                          # above only catches a component named exactly '.env',
+                          # so variants like '.env copy', '.env.local', or
+                          # '.env.production' would otherwise be tarred into a
+                          # public artifact. '.env.example' is the one variant
+                          # that must ship — the README tells users to copy it.
+                          if not should_skip:
+                              for part in str(rel_path).split(os.sep):
+                                  if part.startswith('.env') and part != '.env.example':
+                                      should_skip = True
+                                      break
 
                           if should_skip:
                               continue

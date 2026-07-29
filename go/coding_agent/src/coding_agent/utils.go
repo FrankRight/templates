@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 var codeFencePattern = regexp.MustCompile("(?s)^```(?:python)?\\s*\\n(.*?)\\n```$")

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 	"golang.org/x/net/html"
 )
 
@@ -131,9 +131,16 @@ var htmlEntityReplacer = strings.NewReplacer(
 func NewWikipediaSearchTool() (agnt5.Tool, error) {
 	return agnt5.NewTool("wikipedia_search_tool", func(c context.Context, args map[string]any) (any, error) {
 		query, _ := args["query"].(string)
+		// Tool arguments arrive as decoded JSON, so a model-supplied integer
+		// lands here as a float64. Clamp both ends: the Wikipedia API rejects
+		// srlimit above 50, and a model passing 0 would otherwise silently ask
+		// for no results at all.
 		maxResults := 3
 		if m, ok := args["max_results"].(float64); ok {
 			maxResults = int(m)
+		}
+		if maxResults < 1 {
+			maxResults = 1
 		}
 		if maxResults > 50 {
 			maxResults = 50
@@ -214,29 +221,4 @@ func NewWikipediaSearchTool() (agnt5.Tool, error) {
 			"required": []string{"query"},
 		}),
 	)
-}
-
-func logInfo(c context.Context, msg string, kv ...any) {
-	if ctx, ok := c.(*agnt5.Context); ok {
-		ctx.Logger().Info(msg, kv...)
-	}
-}
-
-func logWarn(c context.Context, msg string, kv ...any) {
-	if ctx, ok := c.(*agnt5.Context); ok {
-		ctx.Logger().Warn(msg, kv...)
-	}
-}
-
-func logError(c context.Context, msg string, kv ...any) {
-	if ctx, ok := c.(*agnt5.Context); ok {
-		ctx.Logger().Error(msg, kv...)
-	}
-}
-
-func truncate(s string, n int) string {
-	if len(s) <= n {
-		return s
-	}
-	return s[:n] + "..."
 }

@@ -4,7 +4,7 @@
 //  3. Writing Agent  - synthesizes findings into a comprehensive report
 package hitl_deep_research
 
-import "agnt5.dev/sdk-go/agnt5"
+import "github.com/agnt5dev/sdk-go/agnt5"
 
 const scopingAgentPrompt = `You are a research scoping specialist who structures research requests into actionable plans.
 
@@ -99,6 +99,15 @@ var (
 	WritingAgent  *agnt5.Agent
 )
 
+// Package-level tools, also assigned in NewAgents(). They are exported so
+// main() can register them with agnt5.RegisterTool in addition to attaching
+// them to ResearchAgent — registration is what publishes their JSON schema to
+// the platform and makes them invocable on their own.
+var (
+	FetchWebpageTool    agnt5.Tool
+	WikipediaSearchTool agnt5.Tool
+)
+
 // NewAgents builds the three research-pipeline agents.
 //
 // Note: the Go SDK has no max_tokens option on NewAgent (Python's
@@ -116,11 +125,11 @@ func NewAgents(model agnt5.LanguageModel) error {
 		return err
 	}
 
-	fetchWebpage, err := NewFetchWebpageTool()
+	FetchWebpageTool, err = NewFetchWebpageTool()
 	if err != nil {
 		return err
 	}
-	wikipediaSearch, err := NewWikipediaSearchTool()
+	WikipediaSearchTool, err = NewWikipediaSearchTool()
 	if err != nil {
 		return err
 	}
@@ -128,7 +137,7 @@ func NewAgents(model agnt5.LanguageModel) error {
 	ResearchAgent, err = agnt5.NewAgent("ResearchAgent",
 		agnt5.WithAgentModel(model),
 		agnt5.WithAgentInstructions(researchAgentPrompt),
-		agnt5.WithAgentTools(fetchWebpage, wikipediaSearch),
+		agnt5.WithAgentTools(FetchWebpageTool, WikipediaSearchTool),
 		agnt5.WithAgentMaxTurns(10),
 	)
 	if err != nil {

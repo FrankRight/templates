@@ -9,12 +9,12 @@ importers:
   .:
     dependencies:
       '@agnt5/sdk':
-        specifier: ^0.5.7
-        version: 0.5.7
+        specifier: ^0.6.3
+        version: 0.6.3
     devDependencies:
       '@types/node':
-        specifier: ^25.7.0
-        version: 25.7.0
+        specifier: ^26.0.0
+        version: 26.1.2
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -24,34 +24,28 @@ importers:
 
 packages:
 
-  '@agnt5/sdk-darwin-arm64@0.5.7':
-    resolution: {integrity: sha512-/MDo1mqHXFfQAZoS/4OOJVWgHODjHX42qv0wlemVzHsA0G3EIPfVRNVs8zvmw7veACfyqkEIAXnPuwHQhMvKEw==}
+  '@agnt5/sdk-darwin-arm64@0.6.3':
+    resolution: {integrity: sha512-obmqL4TAt57z9KTXRCNCIrGYkFoixazxwlf581vfGqjn+oLPE/rCMdu6opkxpmw4xVHcqdi4aXIFqYAT3+wUDQ==}
     engines: {node: '>=18.0.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@agnt5/sdk-darwin-x64@0.5.7':
-    resolution: {integrity: sha512-28LZoHHYyX92n1yUqPDG0ETotKk18g195f8lHDGsA3AaiD46nIpt4Sh0oxha8ipoUO1YztPkM0cVfzy67Gr2+Q==}
-    engines: {node: '>=18.0.0'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@agnt5/sdk-linux-arm64-gnu@0.5.7':
-    resolution: {integrity: sha512-/97EieXZN2ljGcNI4L2FIQq4J4xEwtGLdV0K9I8Oos7P6zISSGN6J9RVKwHlYhOedjuz7OYmjx0eCDeyC2tVGQ==}
+  '@agnt5/sdk-linux-arm64-gnu@0.6.3':
+    resolution: {integrity: sha512-SdeU4s+XHzA4Zxas9HpLbpy9C2nT9cy2CuRtqE1ldu07Qndf15IMBbefQrf2FeOaihjxPeYrkHTcZFh8cTY5jA==}
     engines: {node: '>=18.0.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@agnt5/sdk-linux-x64-gnu@0.5.7':
-    resolution: {integrity: sha512-7NkEUb33zSI+C3+tfYheguA5vR2H1QwCa5pTb3zi8QVgzffo1g8bBkUqdwLAp6U+s9lJRwZ9tfpwb9L34ifV0w==}
+  '@agnt5/sdk-linux-x64-gnu@0.6.3':
+    resolution: {integrity: sha512-D8766XSEOaI9da5egiQleV4/hGVR4l9xZJgQBMwiiS7J32LvKzP/wp1cM6YUxCTcHtPsQ6sc27079KmIxja4+A==}
     engines: {node: '>=18.0.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@agnt5/sdk@0.5.7':
-    resolution: {integrity: sha512-x9SHFpHxis6HugILFRLiLTYZGqJE6X/j7EiaaY/qFrgtWv9h1vMP4pQl9t8fuFjB88yZrn4fdHLau3h81Sioow==}
+  '@agnt5/sdk@0.6.3':
+    resolution: {integrity: sha512-ZR0MwToOowtO+1a5/H6eqlVvJzA/8grGdJoXUsinfC7zZ4+PX+xsEFuejCcxOkpqWTNbVodV1EAuCu05ZIshow==}
     engines: {node: '>=18.0.0'}
 
   '@esbuild/aix-ppc64@0.27.7':
@@ -210,8 +204,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@types/node@25.7.0':
-    resolution: {integrity: sha512-z+pdZyxE+RTQE9AcboAZCb4otwcrvgHD+GlBpPgn0emDVt0ohrTMhAwlr2Wd9nZ+nihhYFxO2pThz3C5qSu2Eg==}
+  '@types/node@26.1.2':
+    resolution: {integrity: sha512-Vu4a5UFA9rIIFJ7rB/Vaafh9lrCQszopTCx6KjFboXTGQbPNasehVR5TEiithSDGyd1DEiUByggTZsg8jukeIg==}
 
   ajv@8.20.0:
     resolution: {integrity: sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==}
@@ -378,8 +372,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@7.21.0:
-    resolution: {integrity: sha512-w9IMgQrz4O0YN1LtB7K5P63vhlIOvC7opSmouCJ+ZywlPAlO9gIkJ+otk6LvGpAs2wg4econaCz3TvQ9xPoyuQ==}
+  undici-types@8.3.0:
+    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -389,27 +383,23 @@ packages:
 
 snapshots:
 
-  '@agnt5/sdk-darwin-arm64@0.5.7':
+  '@agnt5/sdk-darwin-arm64@0.6.3':
     optional: true
 
-  '@agnt5/sdk-darwin-x64@0.5.7':
+  '@agnt5/sdk-linux-arm64-gnu@0.6.3':
     optional: true
 
-  '@agnt5/sdk-linux-arm64-gnu@0.5.7':
+  '@agnt5/sdk-linux-x64-gnu@0.6.3':
     optional: true
 
-  '@agnt5/sdk-linux-x64-gnu@0.5.7':
-    optional: true
-
-  '@agnt5/sdk@0.5.7':
+  '@agnt5/sdk@0.6.3':
     dependencies:
       ajv: 8.20.0
-      better-sqlite3: 11.10.0
     optionalDependencies:
-      '@agnt5/sdk-darwin-arm64': 0.5.7
-      '@agnt5/sdk-darwin-x64': 0.5.7
-      '@agnt5/sdk-linux-arm64-gnu': 0.5.7
-      '@agnt5/sdk-linux-x64-gnu': 0.5.7
+      '@agnt5/sdk-darwin-arm64': 0.6.3
+      '@agnt5/sdk-linux-arm64-gnu': 0.6.3
+      '@agnt5/sdk-linux-x64-gnu': 0.6.3
+      better-sqlite3: 11.10.0
 
   '@esbuild/aix-ppc64@0.27.7':
     optional: true
@@ -489,9 +479,9 @@ snapshots:
   '@esbuild/win32-x64@0.27.7':
     optional: true
 
-  '@types/node@25.7.0':
+  '@types/node@26.1.2':
     dependencies:
-      undici-types: 7.21.0
+      undici-types: 8.3.0
 
   ajv@8.20.0:
     dependencies:
@@ -500,41 +490,51 @@ snapshots:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
-  base64-js@1.5.1: {}
+  base64-js@1.5.1:
+    optional: true
 
   better-sqlite3@11.10.0:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.3
+    optional: true
 
   bindings@1.5.0:
     dependencies:
       file-uri-to-path: 1.0.0
+    optional: true
 
   bl@4.1.0:
     dependencies:
       buffer: 5.7.1
       inherits: 2.0.4
       readable-stream: 3.6.2
+    optional: true
 
   buffer@5.7.1:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+    optional: true
 
-  chownr@1.1.4: {}
+  chownr@1.1.4:
+    optional: true
 
   decompress-response@6.0.0:
     dependencies:
       mimic-response: 3.1.0
+    optional: true
 
-  deep-extend@0.6.0: {}
+  deep-extend@0.6.0:
+    optional: true
 
-  detect-libc@2.1.2: {}
+  detect-libc@2.1.2:
+    optional: true
 
   end-of-stream@1.4.5:
     dependencies:
       once: 1.4.0
+    optional: true
 
   esbuild@0.27.7:
     optionalDependencies:
@@ -565,15 +565,18 @@ snapshots:
       '@esbuild/win32-ia32': 0.27.7
       '@esbuild/win32-x64': 0.27.7
 
-  expand-template@2.0.3: {}
+  expand-template@2.0.3:
+    optional: true
 
   fast-deep-equal@3.1.3: {}
 
   fast-uri@3.1.2: {}
 
-  file-uri-to-path@1.0.0: {}
+  file-uri-to-path@1.0.0:
+    optional: true
 
-  fs-constants@1.0.0: {}
+  fs-constants@1.0.0:
+    optional: true
 
   fsevents@2.3.3:
     optional: true
@@ -582,31 +585,41 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  github-from-package@0.0.0: {}
+  github-from-package@0.0.0:
+    optional: true
 
-  ieee754@1.2.1: {}
+  ieee754@1.2.1:
+    optional: true
 
-  inherits@2.0.4: {}
+  inherits@2.0.4:
+    optional: true
 
-  ini@1.3.8: {}
+  ini@1.3.8:
+    optional: true
 
   json-schema-traverse@1.0.0: {}
 
-  mimic-response@3.1.0: {}
+  mimic-response@3.1.0:
+    optional: true
 
-  minimist@1.2.8: {}
+  minimist@1.2.8:
+    optional: true
 
-  mkdirp-classic@0.5.3: {}
+  mkdirp-classic@0.5.3:
+    optional: true
 
-  napi-build-utils@2.0.0: {}
+  napi-build-utils@2.0.0:
+    optional: true
 
   node-abi@3.92.0:
     dependencies:
       semver: 7.8.0
+    optional: true
 
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
+    optional: true
 
   prebuild-install@7.1.3:
     dependencies:
@@ -622,11 +635,13 @@ snapshots:
       simple-get: 4.0.1
       tar-fs: 2.1.4
       tunnel-agent: 0.6.0
+    optional: true
 
   pump@3.0.4:
     dependencies:
       end-of-stream: 1.4.5
       once: 1.4.0
+    optional: true
 
   rc@1.2.8:
     dependencies:
@@ -634,34 +649,42 @@ snapshots:
       ini: 1.3.8
       minimist: 1.2.8
       strip-json-comments: 2.0.1
+    optional: true
 
   readable-stream@3.6.2:
     dependencies:
       inherits: 2.0.4
       string_decoder: 1.3.0
       util-deprecate: 1.0.2
+    optional: true
 
   require-from-string@2.0.2: {}
 
   resolve-pkg-maps@1.0.0: {}
 
-  safe-buffer@5.2.1: {}
+  safe-buffer@5.2.1:
+    optional: true
 
-  semver@7.8.0: {}
+  semver@7.8.0:
+    optional: true
 
-  simple-concat@1.0.1: {}
+  simple-concat@1.0.1:
+    optional: true
 
   simple-get@4.0.1:
     dependencies:
       decompress-response: 6.0.0
       once: 1.4.0
       simple-concat: 1.0.1
+    optional: true
 
   string_decoder@1.3.0:
     dependencies:
       safe-buffer: 5.2.1
+    optional: true
 
-  strip-json-comments@2.0.1: {}
+  strip-json-comments@2.0.1:
+    optional: true
 
   tar-fs@2.1.4:
     dependencies:
@@ -669,6 +692,7 @@ snapshots:
       mkdirp-classic: 0.5.3
       pump: 3.0.4
       tar-stream: 2.2.0
+    optional: true
 
   tar-stream@2.2.0:
     dependencies:
@@ -677,6 +701,7 @@ snapshots:
       fs-constants: 1.0.0
       inherits: 2.0.4
       readable-stream: 3.6.2
+    optional: true
 
   tsx@4.21.0:
     dependencies:
@@ -688,11 +713,14 @@ snapshots:
   tunnel-agent@0.6.0:
     dependencies:
       safe-buffer: 5.2.1
+    optional: true
 
   typescript@5.9.3: {}
 
-  undici-types@7.21.0: {}
+  undici-types@8.3.0: {}
 
-  util-deprecate@1.0.2: {}
+  util-deprecate@1.0.2:
+    optional: true
 
-  wrappy@1.0.2: {}
+  wrappy@1.0.2:
+    optional: true

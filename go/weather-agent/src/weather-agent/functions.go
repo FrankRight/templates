@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"time"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 var httpClient = &http.Client{Timeout: 10 * time.Second}

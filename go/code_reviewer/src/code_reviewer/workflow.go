@@ -11,7 +11,7 @@ import (
 	"strings"
 	"sync"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 const prSizeWarningThreshold = 30
@@ -176,13 +176,29 @@ func CodeReviewerWorkflow(ctx *agnt5.Context, in CodeReviewInput, model agnt5.La
 	ctx.Logger().Info("Step 4/4: Reviewer Agent synthesizing final report")
 
 	synthesisMessage := buildSynthesisMessage(prData, contextSummary, techStack, fileReviews, securityReview, severityCounts)
-	reportResult, err := ReviewerAgent.Run(ctx, agnt5.AgentInput{Message: synthesisMessage})
+
+	// Checkpointed: this prompt carries every per-file finding plus the whole
+	// security review, so it is the most expensive single model call in the
+	// workflow. A restart after it completes must not pay for it twice.
+	report, err := agnt5.Step(ctx, "synthesize_report", func(context.Context) (string, error) {
+		result, err := ReviewerAgent.Run(ctx, agnt5.AgentInput{Message: synthesisMessage})
+		if err != nil {
+			return "", err
+		}
+		return result.Response, nil
+	})
 	if err != nil {
 		return CodeReviewOutput{}, err
 	}
-	report := reportResult.Response
 
-	reportFile := saveReport(ctx, in.PRURL, in.TicketURL, report, fileReviews, fileCount, securityReview, severityCounts)
+	// Writing the report file is a side effect, so it goes through a Step too —
+	// a bare os.WriteFile in the workflow body would re-run on every replay.
+	reportFile, err := agnt5.Step(ctx, "save_report", func(context.Context) (string, error) {
+		return saveReport(ctx, in.PRURL, in.TicketURL, report, fileReviews, fileCount, securityReview, severityCounts), nil
+	})
+	if err != nil {
+		return CodeReviewOutput{}, err
+	}
 
 	ctx.Logger().Info("Code review workflow complete")
 	return CodeReviewOutput{

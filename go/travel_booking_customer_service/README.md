@@ -26,7 +26,7 @@ src/travel_booking_customer_service/       # implementation package (mirrors Pyt
 
 ## Setup
 
-1. Install Go 1.23+:
+1. Install Go 1.26.5+ (required by `github.com/agnt5dev/sdk-go`):
    ```bash
    go version
    ```

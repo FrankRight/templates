@@ -6,7 +6,7 @@ import (
 	"context"
 	"log"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 
 	coding_agent "coding-agent/src/coding_agent"
 )

@@ -1,6 +1,6 @@
 name: agnt5-customer-service
 language: go
-language_version: "1.23"
+language_version: "1.26"
 environment: dev
 variables: {}
 

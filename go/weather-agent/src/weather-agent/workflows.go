@@ -4,7 +4,7 @@ package weather_agent
 import (
 	"context"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 type GetWeatherInput struct {
@@ -13,9 +13,12 @@ type GetWeatherInput struct {
 
 // GetWeatherWorkflow fetches weather data for a location.
 func GetWeatherWorkflow(ctx *agnt5.Context, in GetWeatherInput) (WeatherData, error) {
-	weather, err := agnt5.Step(ctx, "get_weather_data", func(context.Context) (WeatherData, error) {
-		return fetchWeatherData(ctx, in.Location)
-	})
+	// agnt5.Task rather than agnt5.Step: both checkpoint the result, but Task
+	// takes the registered function directly and emits function.started /
+	// function.completed around it, so the fetch renders as its own Function
+	// node in Studio instead of an anonymous step.
+	weather, err := agnt5.Task(ctx, "get_weather_data",
+		GetWeatherDataInput{Location: in.Location}, GetWeatherData)
 	if err != nil {
 		return WeatherData{}, err
 	}
@@ -48,7 +51,13 @@ func GetWeatherInteractiveWorkflow(ctx *agnt5.Context, in GetWeatherInteractiveI
 	}
 
 	// Messages carries prior turns; Message is the new turn the agent appends.
-	result, err := WeatherAgent.Run(ctx, agnt5.AgentInput{Messages: messages, Message: in.Message})
+	//
+	// Wrapped in a Step so the model call is checkpointed: without it a worker
+	// restart between here and the conversation.Append calls below would re-run
+	// the whole agent turn, paying for the tokens twice.
+	result, err := agnt5.Step(ctx, "weather_agent_turn", func(context.Context) (agnt5.AgentResult, error) {
+		return WeatherAgent.Run(ctx, agnt5.AgentInput{Messages: messages, Message: in.Message})
+	})
 	if err != nil {
 		return GetWeatherInteractiveOutput{}, err
 	}

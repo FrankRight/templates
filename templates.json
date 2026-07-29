@@ -5,7 +5,7 @@
       "title": "Quickstart",
       "description": "Fan-out workflow that summarizes the top Hacker News stories",
       "category": "Getting Started",
-      "capabilities": ["workflows", "functions"],
+      "capabilities": ["workflows", "functions", "agents"],
       "languages": {
         "python": {
           "latest": "v0.2.3",
@@ -14,6 +14,10 @@
         "typescript": {
           "latest": "v0.2.3",
           "versions": ["v0.2.1", "v0.2.2", "v0.2.3"]
+        },
+        "go": {
+          "latest": "v0.2.0",
+          "versions": ["v0.1.0", "v0.2.0"]
         }
       }
     },
@@ -30,6 +34,10 @@
         "typescript": {
           "latest": "v1.0.2",
           "versions": ["v1.0.0", "v1.0.1", "v1.0.2"]
+        },
+        "go": {
+          "latest": "v1.0.0",
+          "versions": ["v0.1.0", "v1.0.0"]
         }
       }
     },
@@ -46,6 +54,10 @@
         "typescript": {
           "latest": "v2.0.2",
           "versions": ["v2.0.0", "v2.0.1", "v2.0.2"]
+        },
+        "go": {
+          "latest": "v1.0.0",
+          "versions": ["v0.1.0", "v1.0.0"]
         }
       }
     },
@@ -62,6 +74,10 @@
         "typescript": {
           "latest": "v1.0.2",
           "versions": ["v1.0.0", "v1.0.1", "v1.0.2"]
+        },
+        "go": {
+          "latest": "v1.0.0",
+          "versions": ["v0.1.0", "v1.0.0"]
         }
       }
     },
@@ -69,7 +85,7 @@
       "title": "Customer Service Assistant",
       "description": "Multi-agent travel booking assistant with flight and hotel search",
       "category": "Customer Support / Chatbots",
-      "capabilities": ["agents", "memory", "workflows", "integrations"],
+      "capabilities": ["agents", "memory", "workflows", "integrations", "tooling"],
       "languages": {
         "python": {
           "latest": "v1.0.2",
@@ -78,6 +94,10 @@
         "typescript": {
           "latest": "v1.0.2",
           "versions": ["v1.0.0", "v1.0.1", "v1.0.2"]
+        },
+        "go": {
+          "latest": "v1.0.0",
+          "versions": ["v0.1.0", "v1.0.0"]
         }
       }
     },
@@ -94,6 +114,10 @@
         "typescript": {
           "latest": "v1.0.2",
           "versions": ["v1.0.0", "v1.0.1", "v1.0.2"]
+        },
+        "go": {
+          "latest": "v1.0.0",
+          "versions": ["v0.1.0", "v1.0.0"]
         }
       }
     },
@@ -101,7 +125,7 @@
       "title": "HITL Deep Research",
       "description": "Research pipeline with a human-in-the-loop approval gate before research begins",
       "category": "Research & Analysis",
-      "capabilities": ["agents", "workflows", "hitl"],
+      "capabilities": ["agents", "workflows", "functions", "tooling", "hitl"],
       "languages": {
         "python": {
           "latest": "v1.0.1",
@@ -110,6 +134,10 @@
         "typescript": {
           "latest": "v1.0.2",
           "versions": ["v1.0.0", "v1.0.1", "v1.0.2"]
+        },
+        "go": {
+          "latest": "v1.0.0",
+          "versions": ["v0.1.0", "v1.0.0"]
         }
       }
     }

@@ -1,4 +1,5 @@
 /coding-agent
 final_response.md
-.env
+.env*
+!.env.example
 .agnt5/

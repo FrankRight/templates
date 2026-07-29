@@ -11,7 +11,7 @@ import (
 	"log"
 	"os"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 
 	weather_agent "weather-agent/src/weather-agent"
 )
@@ -41,8 +41,14 @@ func main() {
 		}),
 	)
 
-	must(agnt5.RegisterFunction(worker, "get_weather_data", weather_agent.GetWeatherData))
+	// The Go SDK has no auto-register equivalent: every agent, function, tool,
+	// and workflow has to be listed here explicitly.
 	must(agnt5.RegisterAgent(worker, weather_agent.WeatherAgent))
+	must(agnt5.RegisterTool(worker, weather_agent.GetWeatherDataTool))
+	must(agnt5.RegisterFunction(worker, "get_weather_data", weather_agent.GetWeatherData,
+		agnt5.WithRetry(3, 500, 10000),
+		agnt5.WithBackoff("exponential", 2.0),
+	))
 	must(agnt5.RegisterWorkflow(worker, "get_weather", weather_agent.GetWeatherWorkflow))
 	must(agnt5.RegisterWorkflow(worker, "get_weather_interactive", weather_agent.GetWeatherInteractiveWorkflow))
 
