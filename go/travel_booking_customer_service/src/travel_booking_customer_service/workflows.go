@@ -1,7 +1,11 @@
 // Travel booking workflow.
 package travel_booking_customer_service
 
-import "agnt5.dev/sdk-go/agnt5"
+import (
+	"context"
+
+	"github.com/agnt5dev/sdk-go/agnt5"
+)
 
 type TravelBookingInput struct {
 	Message string `json:"message"`
@@ -28,7 +32,13 @@ func TravelBookingWorkflow(ctx *agnt5.Context, in TravelBookingInput) (TravelBoo
 		messages[i] = agnt5.Message{Role: agnt5.MessageRole(m.Role), Content: m.Content}
 	}
 
-	result, err := TravelBookingAgent.Run(ctx, agnt5.AgentInput{Messages: messages, Message: in.Message})
+	// Wrapped in a Step so the model call is checkpointed. A trip-planning turn
+	// makes up to 8 model round-trips and three SerpAPI calls; without this a
+	// worker restart before the conversation.Append calls below would re-run
+	// and re-bill the entire turn.
+	result, err := agnt5.Step(ctx, "travel_booking_agent_turn", func(context.Context) (agnt5.AgentResult, error) {
+		return TravelBookingAgent.Run(ctx, agnt5.AgentInput{Messages: messages, Message: in.Message})
+	})
 	if err != nil {
 		return TravelBookingOutput{}, err
 	}

@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 
 	"quickstart/src/quickstart"
 )
@@ -41,12 +41,27 @@ func main() {
 	}
 
 	worker := agnt5.NewWorker("quickstart",
-		agnt5.WithServiceVersion("0.1.0"),
+		agnt5.WithServiceVersion("0.2.0"),
 	)
 
-	must(agnt5.RegisterFunction(worker, "fetch_top_ids", quickstart.FetchTopIDsFunction))
-	must(agnt5.RegisterFunction(worker, "fetch_story", quickstart.FetchStoryFunction))
-	must(agnt5.RegisterFunction(worker, "summarize", quickstart.SummarizeFunction))
+	// The Go SDK has no auto-register equivalent: every agent, function, and
+	// workflow has to be listed here explicitly.
+	must(agnt5.RegisterAgent(worker, quickstart.Summarizer))
+
+	// The three functions that touch the network get a retry policy; the
+	// digest assembly is pure string formatting, so it has nothing to retry.
+	must(agnt5.RegisterFunction(worker, "fetch_top_ids", quickstart.FetchTopIDsFunction,
+		agnt5.WithRetry(3, 500, 10000),
+		agnt5.WithBackoff("exponential", 2.0),
+	))
+	must(agnt5.RegisterFunction(worker, "fetch_story", quickstart.FetchStoryFunction,
+		agnt5.WithRetry(3, 500, 10000),
+		agnt5.WithBackoff("exponential", 2.0),
+	))
+	must(agnt5.RegisterFunction(worker, "summarize", quickstart.SummarizeFunction,
+		agnt5.WithRetry(3, 1000, 30000),
+		agnt5.WithBackoff("exponential", 2.0),
+	))
 	must(agnt5.RegisterFunction(worker, "assemble_digest", quickstart.AssembleDigestFunction))
 	must(agnt5.RegisterWorkflow(worker, "digest", quickstart.DigestWorkflow))
 

@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 
 	tutor_agent "tutor-agent/src/tutor_agent"
 )

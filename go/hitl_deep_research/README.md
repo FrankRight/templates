@@ -12,8 +12,9 @@ A research pipeline that combines three specialized AI agents with a **human-in-
 ## Key concepts
 
 - **Human-in-the-loop (HITL)** — `ctx.AskUser(...)` suspends the workflow at a checkpoint and resumes only after a human responds. Its first call returns a `*WaitingForUserInputError` that the workflow propagates as its own return error so the runtime can suspend the run; on resume, the same call returns the recorded answer directly.
-- **Durable workflows** — Each stage is wrapped in `agnt5.Step`. If the worker restarts mid-run, the workflow replays from the last completed step without repeating side effects.
+- **Durable workflows** — Each stage is wrapped in `agnt5.Task`, which checkpoints its result. If the worker restarts mid-run, the workflow replays from the last completed stage without repeating side effects. (`agnt5.Task` is `agnt5.Step` plus function-level trace events, so each stage shows up as its own component in Studio.)
 - **Specialized agents** — Scoping, Research, and Writing agents each have a focused role, keeping concerns cleanly separated.
+- **Explicit registration** — The Go SDK has no auto-discovery, so every agent, function, tool, and workflow is registered by hand in `main.go`.
 
 ## Project structure
 
@@ -22,13 +23,23 @@ main.go                       # entry point: builds the model/agents, registers 
 src/hitl_deep_research/         # implementation package (mirrors Python's src/<package>/, TypeScript's src/)
   tools.go                       # fetch_webpage_tool and wikipedia_search_tool
   agents.go                      # the scoping, research, and writing agents
-  functions.go                   # plan/conduct/write pipeline stages
+  functions.go                   # plan_research / conduct_research / write_report stages
   workflows.go                   # the HITL-gated research workflow
+  utils.go                       # shared logging and string helpers
 ```
+
+## Registered components
+
+| Type | Name |
+| --- | --- |
+| Workflow | `deep_research_workflow` |
+| Function | `plan_research`, `conduct_research`, `write_report` |
+| Agent | `ScopingAgent`, `ResearchAgent`, `WritingAgent` |
+| Tool | `fetch_webpage_tool`, `wikipedia_search_tool` |
 
 ## Setup
 
-1. Install Go 1.23+:
+1. Install Go 1.26.5+ (required by `github.com/agnt5dev/sdk-go`):
    ```bash
    go version
    ```

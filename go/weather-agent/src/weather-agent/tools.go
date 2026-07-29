@@ -4,7 +4,7 @@ package weather_agent
 import (
 	"context"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 func NewGetWeatherDataTool() (agnt5.Tool, error) {

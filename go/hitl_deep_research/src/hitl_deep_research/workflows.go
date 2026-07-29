@@ -11,12 +11,20 @@
 // that must be propagated as this workflow's own return error so the
 // runtime can suspend the run; on resume, the same call returns the user's
 // answer directly instead of pausing again.
+//
+// Replay safety: on resume this function body re-runs from the top. Every
+// line above an AskUser call executes a second time — only the AskUser call
+// itself short-circuits, returning the recorded answer. Anything with a side
+// effect that sits before a pause must therefore go through agnt5.Task or
+// agnt5.Step, which memoize their result and skip the work on the replay
+// pass. Unlike the Python SDK's ctx._is_replay, the Go SDK exposes no replay
+// flag, so there is no way to guard a bare statement — wrapping it is the
+// only option. The Logger calls below are the one deliberate exception: they
+// duplicate on resume, which is noise rather than a correctness problem.
 package hitl_deep_research
 
 import (
-	"context"
-
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 type DeepResearchInput struct {
@@ -35,10 +43,14 @@ func DeepResearchWorkflow(ctx *agnt5.Context, in DeepResearchInput) (DeepResearc
 	topic := in.Message
 	ctx.Logger().Info("Deep research workflow started", "topic", truncate(topic, 100))
 
-	// Stage 1: Planning
-	researchPlan, err := agnt5.Step(ctx, "plan_research", func(context.Context) (string, error) {
-		return planResearch(ctx, topic)
-	})
+	// Stage 1: Planning.
+	//
+	// agnt5.Task rather than agnt5.Step: both checkpoint the result, but Task
+	// also emits function.started/function.completed around it, so each stage
+	// renders as a Function node in Studio the way the Python and TypeScript
+	// versions of this template do.
+	researchPlan, err := agnt5.Task(ctx, "plan_research",
+		PlanResearchInput{Topic: topic}, PlanResearch)
 	if err != nil {
 		return DeepResearchOutput{}, err
 	}
@@ -87,18 +99,20 @@ func DeepResearchWorkflow(ctx *agnt5.Context, in DeepResearchInput) (DeepResearc
 	ctx.Logger().Info("Research plan approved, proceeding to research phase")
 
 	// Stage 3: Research
-	researchFindings, err := agnt5.Step(ctx, "conduct_research", func(context.Context) (string, error) {
-		return conductResearch(ctx, topic, researchPlan)
-	})
+	researchFindings, err := agnt5.Task(ctx, "conduct_research",
+		ConductResearchInput{Topic: topic, ResearchPlan: researchPlan}, ConductResearch)
 	if err != nil {
 		return DeepResearchOutput{}, err
 	}
 	ctx.Logger().Info("Research findings gathered")
 
 	// Stage 4: Write Report
-	finalReport, err := agnt5.Step(ctx, "write_report", func(context.Context) (string, error) {
-		return writeReport(ctx, topic, researchPlan, researchFindings)
-	})
+	finalReport, err := agnt5.Task(ctx, "write_report",
+		WriteReportInput{
+			Topic:            topic,
+			ResearchPlan:     researchPlan,
+			ResearchFindings: researchFindings,
+		}, WriteReport)
 	if err != nil {
 		return DeepResearchOutput{}, err
 	}

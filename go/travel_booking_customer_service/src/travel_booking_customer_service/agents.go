@@ -1,7 +1,7 @@
 // Travel booking agent.
 package travel_booking_customer_service
 
-import "agnt5.dev/sdk-go/agnt5"
+import "github.com/agnt5dev/sdk-go/agnt5"
 
 const travelBookingInstructions = `You are a professional travel booking assistant helping customers plan their trips.
 
@@ -112,16 +112,27 @@ Infer codes automatically when users mention cities.
 // worker starts registering components.
 var TravelBookingAgent *agnt5.Agent
 
+// Package-level tools, also assigned in NewTravelBookingAgent(). They are
+// exported so main() can register them with agnt5.RegisterTool in addition to
+// attaching them to the agent — registration is what publishes their JSON
+// schemas to the platform and makes them invocable on their own.
+var (
+	SearchFlightsTool   agnt5.Tool
+	SearchHotelsTool    agnt5.Tool
+	CreateItineraryTool agnt5.Tool
+)
+
 func NewTravelBookingAgent(model agnt5.LanguageModel) error {
-	searchFlights, err := NewSearchFlightsTool()
+	var err error
+	SearchFlightsTool, err = NewSearchFlightsTool()
 	if err != nil {
 		return err
 	}
-	searchHotels, err := NewSearchHotelsTool()
+	SearchHotelsTool, err = NewSearchHotelsTool()
 	if err != nil {
 		return err
 	}
-	createItinerary, err := NewCreateItineraryTool()
+	CreateItineraryTool, err = NewCreateItineraryTool()
 	if err != nil {
 		return err
 	}
@@ -131,7 +142,7 @@ func NewTravelBookingAgent(model agnt5.LanguageModel) error {
 	TravelBookingAgent, err = agnt5.NewAgent("travel_booking_agent",
 		agnt5.WithAgentModel(model),
 		agnt5.WithAgentInstructions(travelBookingInstructions),
-		agnt5.WithAgentTools(searchFlights, searchHotels, createItinerary),
+		agnt5.WithAgentTools(SearchFlightsTool, SearchHotelsTool, CreateItineraryTool),
 		agnt5.WithAgentMaxTurns(8),
 	)
 	return err

@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 const plannerSystemPrompt = `You are an Expert Planning Agent that creates perfectly synchronized development and test plans for Python projects.

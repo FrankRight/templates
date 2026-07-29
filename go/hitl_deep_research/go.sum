@@ -1,3 +1,5 @@
+github.com/agnt5dev/sdk-go v0.2.1 h1:/S5Q5guEvxYt9XCON0/SF8r2XFKDIcXYnO0IxNBCvD8=
+github.com/agnt5dev/sdk-go v0.2.1/go.mod h1:ZZ3duyvuaa5i4tzx9pG1hP2yvPaWQpYY4n5NtS1JXlk=
 github.com/go-logr/logr v1.4.3 h1:CjnDlHq8ikf6E492q6eKboGOC0T8CDaOvkHCIg8idEI=
 github.com/go-logr/logr v1.4.3/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
 github.com/go-logr/stdr v1.2.2 h1:hSWxHoqTgW2S2qGc0LTAI563KZ5YKYRhT3MFKZMbjag=

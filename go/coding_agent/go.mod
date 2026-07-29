@@ -1,8 +1,8 @@
 module coding-agent
 
-go 1.23.1
+go 1.26.5
 
-require agnt5.dev/sdk-go v0.2.0
+require github.com/agnt5dev/sdk-go v0.2.1
 
 require (
 	golang.org/x/net v0.41.0 // indirect
@@ -12,5 +12,3 @@ require (
 	google.golang.org/grpc v1.75.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 )
-
-

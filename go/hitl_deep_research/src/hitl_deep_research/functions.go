@@ -1,5 +1,12 @@
 // Functions that drive each stage of the research pipeline. Each wraps a
 // single agent call with a stage-specific prompt.
+//
+// Every stage is exposed twice: an unexported helper holding the prompt and
+// agent call, and an exported `func(*agnt5.Context, In) (Out, error)` wrapper
+// with a typed input struct. The wrapper is the shape both agnt5.RegisterFunction
+// (main.go) and agnt5.Task (workflows.go) require, so each stage shows up as a
+// real Function component — independently invocable, retryable, and rendered as
+// its own node in Studio traces, matching the Python and TypeScript siblings.
 package hitl_deep_research
 
 import (
@@ -7,8 +14,38 @@ import (
 	"strings"
 	"time"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
+
+type PlanResearchInput struct {
+	Topic string `json:"topic"`
+}
+
+type ConductResearchInput struct {
+	Topic        string `json:"topic"`
+	ResearchPlan string `json:"research_plan"`
+}
+
+type WriteReportInput struct {
+	Topic            string `json:"topic"`
+	ResearchPlan     string `json:"research_plan"`
+	ResearchFindings string `json:"research_findings"`
+}
+
+// PlanResearch is the registered Function wrapper around planResearch.
+func PlanResearch(ctx *agnt5.Context, in PlanResearchInput) (string, error) {
+	return planResearch(ctx, in.Topic)
+}
+
+// ConductResearch is the registered Function wrapper around conductResearch.
+func ConductResearch(ctx *agnt5.Context, in ConductResearchInput) (string, error) {
+	return conductResearch(ctx, in.Topic, in.ResearchPlan)
+}
+
+// WriteReport is the registered Function wrapper around writeReport.
+func WriteReport(ctx *agnt5.Context, in WriteReportInput) (string, error) {
+	return writeReport(ctx, in.Topic, in.ResearchPlan, in.ResearchFindings)
+}
 
 func planResearch(ctx *agnt5.Context, topic string) (string, error) {
 	currentDate := time.Now().UTC().Format("2006-01-02")
@@ -54,9 +91,49 @@ Use the wikipedia_search_tool and fetch_webpage_tool to gather comprehensive inf
 
 	result, err := ResearchAgent.Run(ctx, agnt5.AgentInput{Message: prompt})
 	if err != nil {
-		return "", err
+		// A tool-happy model can burn through WithAgentMaxTurns before it ever
+		// produces a tool-free answer, and the SDK returns an error with no
+		// partial result in that case (agent.go: "agent max turns exceeded").
+		// Failing here would throw away a plan the human already approved at
+		// the HITL gate, so salvage the research instead of propagating.
+		//
+		// The SDK returns a bare errors.New, so there is no sentinel to match
+		// on — string matching is the only option until it exports one.
+		if !strings.Contains(err.Error(), "max turns exceeded") {
+			return "", err
+		}
+		ctx.Logger().Warn("Research agent hit its turn limit, synthesizing from findings so far")
+		return synthesizePartialResearch(ctx, topic, researchPlan)
 	}
 	ctx.Logger().Info("Research completed", "chars", len(result.Response))
+	return result.Response, nil
+}
+
+// synthesizePartialResearch runs one final tool-free pass so the pipeline can
+// continue with whatever the research agent managed to gather before running
+// out of turns. WritingAgent has no tools, so it cannot hit the turn limit in
+// turn and is guaranteed to terminate.
+func synthesizePartialResearch(ctx *agnt5.Context, topic, researchPlan string) (string, error) {
+	prompt := fmt.Sprintf(`Research on the topic below was cut short before it could be completed.
+
+Topic: %s
+
+Research Plan:
+%s
+
+Instructions:
+1. Summarize what is reliably known about the subtopics in the plan
+2. Organize the summary by subtopic, using the same structure as the plan
+3. Do NOT invent sources, URLs, or citations — omit them if you do not have them
+4. Explicitly note which subtopics remain uncovered
+
+Begin your response with "PARTIAL RESEARCH — coverage is incomplete."`, topic, researchPlan)
+
+	result, err := WritingAgent.Run(ctx, agnt5.AgentInput{Message: prompt})
+	if err != nil {
+		return "", err
+	}
+	ctx.Logger().Info("Partial research synthesized", "chars", len(result.Response))
 	return result.Response, nil
 }
 

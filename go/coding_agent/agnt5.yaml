@@ -1,6 +1,6 @@
 name: coding-agent-agnt5
 language: go
-language_version: "1.23"
+language_version: "1.26"
 environment: dev
 
 worker:

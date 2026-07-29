@@ -14,7 +14,7 @@ import (
 	"context"
 	"fmt"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 const defaultMaxRetries = 15

@@ -24,7 +24,7 @@ src/tutor_agent/        # implementation package (mirrors Python's src/<package>
 
 ## Setup
 
-1. Install Go 1.23+:
+1. Install Go 1.26.5+ (required by `github.com/agnt5dev/sdk-go`):
    ```bash
    go version
    ```

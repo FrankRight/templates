@@ -1,3 +1,4 @@
 /quickstart
-.env
+.env*
+!.env.example
 .agnt5/

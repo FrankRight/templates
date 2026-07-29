@@ -10,7 +10,7 @@ import (
 	"errors"
 	"sync"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 type DigestInput struct {
@@ -35,9 +35,13 @@ func DigestWorkflow(ctx *agnt5.Context, in DigestInput) (DigestOutput, error) {
 	ctx.Logger().Info("Starting digest", "limit", limit)
 
 	// 1. One checkpoint: pull the IDs.
-	ids, err := agnt5.Step(ctx, "fetch_top_ids", func(c context.Context) ([]int, error) {
-		return fetchTopIDs(c, limit)
-	})
+	//
+	// agnt5.Task rather than agnt5.Step: both checkpoint the result, but Task
+	// takes a registered function directly and emits function.started /
+	// function.completed around it, so the stage renders as its own Function
+	// node in Studio instead of an anonymous step.
+	ids, err := agnt5.Task(ctx, "fetch_top_ids",
+		FetchTopIDsInput{Limit: limit}, FetchTopIDsFunction)
 	if err != nil {
 		return DigestOutput{}, err
 	}
@@ -64,9 +68,8 @@ func DigestWorkflow(ctx *agnt5.Context, in DigestInput) (DigestOutput, error) {
 	}
 
 	// 4. Combine. One last checkpoint, then return.
-	return agnt5.Step(ctx, "assemble_digest", func(context.Context) (DigestOutput, error) {
-		return assembleDigest(summaries), nil
-	})
+	return agnt5.Task(ctx, "assemble_digest",
+		AssembleDigestInput{Summaries: summaries}, AssembleDigestFunction)
 }
 
 func fetchAllStories(ctx context.Context, ids []int) ([]Story, error) {

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"agnt5.dev/sdk-go/agnt5"
+	"github.com/agnt5dev/sdk-go/agnt5"
 )
 
 // parseADF recursively converts an Atlassian Document Format (ADF) node

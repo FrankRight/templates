@@ -4,7 +4,7 @@
 // delegates to specialized tutor agents based on the subject area.
 package tutor_agent
 
-import "agnt5.dev/sdk-go/agnt5"
+import "github.com/agnt5dev/sdk-go/agnt5"
 
 const historyTutorInstructions = `You are a specialized history tutor agent designed to provide comprehensive assistance with historical queries.
 
