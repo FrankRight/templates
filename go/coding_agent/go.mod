@@ -2,7 +2,7 @@ module coding-agent
 
 go 1.26.5
 
-require github.com/agnt5dev/sdk-go v0.2.1
+require github.com/agnt5dev/sdk-go v0.2.3
 
 require (
 	golang.org/x/net v0.41.0 // indirect

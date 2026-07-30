@@ -32,7 +32,7 @@ interface SummarizedStory {
 }
 
 // 1. Fetch the current top story IDs from HN.
-export const fetchTopIds = fn('fetch_top_ids').run(
+export const fetchTopIds = fn<{ limit: number }, number[]>('fetch_top_ids').run(
   async (ctx: Context, input: { limit: number }): Promise<number[]> => {
     const resp = await fetch(HN_TOP);
     if (!resp.ok) throw new Error(`HN topstories HTTP ${resp.status}`);

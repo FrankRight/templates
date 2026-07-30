@@ -1,6 +1,6 @@
 name: agnt5-tutor-agent
 language: typescript
-language_version: "26"
+language_version: ">=22"
 environment: development
 variables: {}
 

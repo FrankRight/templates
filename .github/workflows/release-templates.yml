@@ -73,9 +73,13 @@ jobs:
                       for item in template_dir.rglob('*'):
                           rel_path = item.relative_to(template_dir)
 
+                          # Lockfiles DO ship. A template pins an exact dependency
+                          # set so `agnt5 create` is reproducible, so uv.lock is
+                          # shipped for parity with package-lock.json / go.sum.
                           # Skip excluded patterns
                           skip_patterns = ['.venv', '__pycache__', '.git', '.agnt5',
-                                          '*.pyc', '.env', 'uv.lock', '.ruff_cache']
+                                          '*.pyc', '.env', '.ruff_cache',
+                                          'node_modules', 'dist']
                           should_skip = False
                           for pattern in skip_patterns:
                               if pattern.startswith('*'):

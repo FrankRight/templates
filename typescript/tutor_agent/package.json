@@ -1,17 +1,17 @@
 {
   "name": "tutor-agent",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "private": true,
   "engines": {
-    "node": ">=26"
+    "node": ">=22"
   },
   "scripts": {
     "start": "npx tsx app.ts"
   },
   "devDependencies": {
-    "@agnt5/sdk": "^0.6.3",
-    "@types/node": "^26.0.0",
+    "@agnt5/sdk": "^0.6.5",
+    "@types/node": "^22.0.0",
     "tsx": "^4.7.0",
     "typescript": "^5.5.0"
   }

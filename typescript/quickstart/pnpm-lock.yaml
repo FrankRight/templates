@@ -9,12 +9,12 @@ importers:
   .:
     dependencies:
       '@agnt5/sdk':
-        specifier: ^0.6.3
-        version: 0.6.3
+        specifier: ^0.6.5
+        version: 0.6.5
     devDependencies:
       '@types/node':
-        specifier: ^26.0.0
-        version: 26.1.2
+        specifier: ^22.0.0
+        version: 22.20.1
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -24,28 +24,28 @@ importers:
 
 packages:
 
-  '@agnt5/sdk-darwin-arm64@0.6.3':
-    resolution: {integrity: sha512-obmqL4TAt57z9KTXRCNCIrGYkFoixazxwlf581vfGqjn+oLPE/rCMdu6opkxpmw4xVHcqdi4aXIFqYAT3+wUDQ==}
+  '@agnt5/sdk-darwin-arm64@0.6.5':
+    resolution: {integrity: sha512-quor4FjkTFjzv9VU/ND5nb8V8Bh84IeILS6rQsfrpUA33U17AWPfU6zgva1sWMQ0laCph3KW1QgqhGxZA23sow==}
     engines: {node: '>=18.0.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@agnt5/sdk-linux-arm64-gnu@0.6.3':
-    resolution: {integrity: sha512-SdeU4s+XHzA4Zxas9HpLbpy9C2nT9cy2CuRtqE1ldu07Qndf15IMBbefQrf2FeOaihjxPeYrkHTcZFh8cTY5jA==}
+  '@agnt5/sdk-linux-arm64-gnu@0.6.5':
+    resolution: {integrity: sha512-N9oAnI0LsER85QB6QmzoSJu1RFAbJVu3VhCY1zdTLpsZl4HMNTS8F6kst+hwTDpjS1h2gMAlcJma6m2DVKOcrQ==}
     engines: {node: '>=18.0.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@agnt5/sdk-linux-x64-gnu@0.6.3':
-    resolution: {integrity: sha512-D8766XSEOaI9da5egiQleV4/hGVR4l9xZJgQBMwiiS7J32LvKzP/wp1cM6YUxCTcHtPsQ6sc27079KmIxja4+A==}
+  '@agnt5/sdk-linux-x64-gnu@0.6.5':
+    resolution: {integrity: sha512-BqD2jZmo2/xb/fF1KFiCxHdtLnYyrc7k3i1GBmRaCmy6TSF4zaD8HFitP9es1ecxLViWo/It91uY4Wk1b/IDUg==}
     engines: {node: '>=18.0.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@agnt5/sdk@0.6.3':
-    resolution: {integrity: sha512-ZR0MwToOowtO+1a5/H6eqlVvJzA/8grGdJoXUsinfC7zZ4+PX+xsEFuejCcxOkpqWTNbVodV1EAuCu05ZIshow==}
+  '@agnt5/sdk@0.6.5':
+    resolution: {integrity: sha512-+ibWWn3+xUdRRE4obzx0JPBj7F/eAdBBl0sq7sybOOM/o22vAn4Dm+MB0oIe1ZtbUT3IB1ZZAc9x0BlhIV1gNg==}
     engines: {node: '>=18.0.0'}
 
   '@esbuild/aix-ppc64@0.27.7':
@@ -204,8 +204,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@types/node@26.1.2':
-    resolution: {integrity: sha512-Vu4a5UFA9rIIFJ7rB/Vaafh9lrCQszopTCx6KjFboXTGQbPNasehVR5TEiithSDGyd1DEiUByggTZsg8jukeIg==}
+  '@types/node@22.20.1':
+    resolution: {integrity: sha512-EANqOCF9QFyra+4pfxUcX9STKJpCLjMbObVzljIJomAWSnuSIEAvyzEU53GaajbXJEgdh0iEcPL+DGvpUd4k1Q==}
 
   ajv@8.20.0:
     resolution: {integrity: sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==}
@@ -372,8 +372,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@8.3.0:
-    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
+  undici-types@6.21.0:
+    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -383,22 +383,22 @@ packages:
 
 snapshots:
 
-  '@agnt5/sdk-darwin-arm64@0.6.3':
+  '@agnt5/sdk-darwin-arm64@0.6.5':
     optional: true
 
-  '@agnt5/sdk-linux-arm64-gnu@0.6.3':
+  '@agnt5/sdk-linux-arm64-gnu@0.6.5':
     optional: true
 
-  '@agnt5/sdk-linux-x64-gnu@0.6.3':
+  '@agnt5/sdk-linux-x64-gnu@0.6.5':
     optional: true
 
-  '@agnt5/sdk@0.6.3':
+  '@agnt5/sdk@0.6.5':
     dependencies:
       ajv: 8.20.0
     optionalDependencies:
-      '@agnt5/sdk-darwin-arm64': 0.6.3
-      '@agnt5/sdk-linux-arm64-gnu': 0.6.3
-      '@agnt5/sdk-linux-x64-gnu': 0.6.3
+      '@agnt5/sdk-darwin-arm64': 0.6.5
+      '@agnt5/sdk-linux-arm64-gnu': 0.6.5
+      '@agnt5/sdk-linux-x64-gnu': 0.6.5
       better-sqlite3: 11.10.0
 
   '@esbuild/aix-ppc64@0.27.7':
@@ -479,9 +479,9 @@ snapshots:
   '@esbuild/win32-x64@0.27.7':
     optional: true
 
-  '@types/node@26.1.2':
+  '@types/node@22.20.1':
     dependencies:
-      undici-types: 8.3.0
+      undici-types: 6.21.0
 
   ajv@8.20.0:
     dependencies:
@@ -717,7 +717,7 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  undici-types@8.3.0: {}
+  undici-types@6.21.0: {}
 
   util-deprecate@1.0.2:
     optional: true
