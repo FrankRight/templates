@@ -289,12 +289,14 @@ func finalResponseNode(ctx *agnt5.Context, model agnt5.LanguageModel, taskDescri
 	ctx.Logger().Info("Generating documentation")
 
 	temperature := 0.0
+	maxTokens := maxOutputTokens
 	resp, err := model.Generate(ctx, agnt5.GenerateRequest{
 		Messages: []agnt5.Message{
 			{Role: agnt5.MessageRoleSystem, Content: markdownSystemPrompt},
 			{Role: agnt5.MessageRoleUser, Content: markdownUserPrompt(taskDescription, generatedCode)},
 		},
 		Temperature: &temperature,
+		MaxTokens:   &maxTokens,
 	})
 	if err != nil {
 		ctx.Logger().Error("Documentation generation failed", "error", err)
