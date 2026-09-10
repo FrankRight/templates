@@ -45,6 +45,9 @@ import { createSandboxImpl as createSandbox, writeFileImpl as writeFile, runComm
 
 const lm = LM.groq({ apiKey: process.env.GROQ_API_KEY });
 const MODEL = 'groq/qwen/qwen3.8-27b';
+// Upper bound on generated output. Left unset, the provider's default cuts long
+// code off mid-expression, and the half-written file fails every retry.
+const MAX_OUTPUT_TOKENS = 8192;
 
 // ============================================================================
 // Helpers
@@ -181,6 +184,7 @@ export const plannerNode = fn('planner_node')
       ],
       config: {
         temperature: 0,
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
         responseFormat: {
           formatType: 'json_schema',
           schemaName: 'Plan',
@@ -297,6 +301,7 @@ ${error_analysis.analysis_summary}
         ],
         config: {
           temperature: 0,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
           responseFormat: {
             formatType: 'json_schema',
             schemaName: 'GeneratedCode',
@@ -339,6 +344,7 @@ export const testGeneratorNode = fn('test_generator_node')
         ],
         config: {
           temperature: 0,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
           responseFormat: {
             formatType: 'json_schema',
             schemaName: 'GeneratedCode',
@@ -568,6 +574,7 @@ export const errorAnalyzerNode = fn('error_analyzer_node')
         ],
         config: {
           temperature: 0,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
           responseFormat: {
             formatType: 'json_schema',
             schemaName: 'ErrorAnalysis',
@@ -611,6 +618,7 @@ export const finalResponseNode = fn('final_response_node')
         ],
         config: {
           temperature: 0,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
         },
       });
 

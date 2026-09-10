@@ -32,6 +32,11 @@ from coding_agent.prompts import (
 )
 from coding_agent.tools import E2BSandboxTools
 
+# Upper bound on generated output. Left unset, the provider's default cuts long
+# code off mid-expression, and the half-written file fails the syntax check on
+# every retry.
+MAX_OUTPUT_TOKENS = 8192
+
 
 def _clean_code(code: str) -> str:
     """Strip markdown code fences the LLM sometimes wraps around the code value."""
@@ -100,6 +105,7 @@ async def planner_node(ctx: FunctionContext, task_description: str) -> Plan:
                 },
             ],
             temperature=0,
+            max_tokens=MAX_OUTPUT_TOKENS,
             response_format=Plan,
         )
 
@@ -185,6 +191,7 @@ async def code_generator_node(
             system_prompt=system_prompt,
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
+            max_tokens=MAX_OUTPUT_TOKENS,
             response_format=GeneratedCode,
         )
 
@@ -224,6 +231,7 @@ async def test_generator_node(
                 },
             ],
             temperature=0,
+            max_tokens=MAX_OUTPUT_TOKENS,
             response_format=GeneratedCode,
         )
 
@@ -409,6 +417,7 @@ async def error_analyzer_node(
                 },
             ],
             temperature=0,
+            max_tokens=MAX_OUTPUT_TOKENS,
             response_format=ErrorAnalysis,
         )
 
@@ -449,6 +458,7 @@ async def final_response_node(
                 },
             ],
             temperature=0,
+            max_tokens=MAX_OUTPUT_TOKENS,
         )
 
         markdown_response = response.text
