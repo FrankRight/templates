@@ -24,7 +24,9 @@ Task: %s
 
 Produce:
 1. A development plan describing the module's public functions/classes, their signatures, parameters, return types, and behavior (including edge cases and error handling).
-2. A test plan describing the pytest test cases that verify every behavior in the development plan, using the exact same function/class names and signatures.`, taskDescription)
+2. A test plan describing the pytest test cases that verify every behavior in the development plan, using the exact same function/class names and signatures.
+
+The implementation is always a single file, main.py, so tests import it with `+"`from main import <name>`"+`. Do not name any other module.`, taskDescription)
 }
 
 const coderSystemPrompt = `You are an Expert Python Coder Agent specialized in implementing code from development plans. Your core identity is absolute precision and plan adherence — implement exactly what the plan specifies, no more, no less.
@@ -57,7 +59,9 @@ Task: %s
 Test Plan:
 %s
 
-Write a complete test.py file that imports from main.py and tests every behavior in the test plan, including edge cases and error conditions.`, taskDescription, testPlan)
+Write a complete test.py file that tests every behavior in the test plan, including edge cases and error conditions.
+
+The code under test is in main.py: import it with `+"`from main import <name>`"+`, never from any other module name, even if the plan mentions one.`, taskDescription, testPlan)
 }
 
 const markdownSystemPrompt = `You are a Technical Documentation Specialist with expertise in code analysis and technical communication. Transform programming tasks and their implementations into clear, professional markdown documentation.`
