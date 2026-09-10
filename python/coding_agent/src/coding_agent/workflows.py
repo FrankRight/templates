@@ -203,7 +203,9 @@ async def coding_agent_workflow(
                         error_logs=error_logs,
                         code=generated_code,
                         tests=generated_tests,
-                        sandbox_id=sandbox_id,
+                        # From state: the local is only bound once a sync has
+                        # succeeded, and every attempt may have failed first.
+                        sandbox_id=ctx.state.get("sandbox_id"),
                     )
 
                 ctx.logger.warning(f"⚠️ Retrying ({retries}/{max_retries}) — {status}")
