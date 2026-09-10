@@ -89,7 +89,7 @@ async def planner_node(ctx: FunctionContext, task_description: str) -> Plan:
 
     try:
         response = await lm.generate(
-            model="groq/openai/gpt-oss-120b",
+            model="groq/qwen/qwen3.8-27b",
             system_prompt=PLANNER_SYSTEM_PROMPT,
             messages=[
                 {
@@ -181,7 +181,7 @@ async def code_generator_node(
             system_prompt = CODEFIXER_SYSTEM_PROMPT
 
         response = await lm.generate(
-            model="groq/openai/gpt-oss-120b",
+            model="groq/qwen/qwen3.8-27b",
             system_prompt=system_prompt,
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
@@ -212,7 +212,7 @@ async def test_generator_node(
     ctx.logger.info("🧪 Generating test suite")
     try:
         response = await lm.generate(
-            model="groq/openai/gpt-oss-120b",
+            model="groq/qwen/qwen3.8-27b",
             system_prompt=TEST_SYSTEM_PROMPT,
             messages=[
                 {
@@ -394,7 +394,7 @@ async def error_analyzer_node(
 
     try:
         response = await lm.generate(
-            model="groq/openai/gpt-oss-120b",
+            model="groq/qwen/qwen3.8-27b",
             system_prompt=ERROR_ANALYZER_SYSTEM_PROMPT,
             messages=[
                 {
@@ -437,7 +437,7 @@ async def final_response_node(
     ctx.logger.info("📝 Generating documentation")
     try:
         response = await lm.generate(
-            model="groq/openai/gpt-oss-120b",
+            model="groq/qwen/qwen3.8-27b",
             system_prompt=MARKDOWN_SYSTEM_PROMPT,
             messages=[
                 {

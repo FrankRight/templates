@@ -44,7 +44,7 @@ import { createSandboxImpl as createSandbox, writeFileImpl as writeFile, runComm
 // ============================================================================
 
 const lm = LM.groq({ apiKey: process.env.GROQ_API_KEY });
-const MODEL = 'groq/openai/gpt-oss-120b';
+const MODEL = 'groq/qwen/qwen3.8-27b';
 
 // ============================================================================
 // Helpers
