@@ -129,8 +129,13 @@ async def code_generator_node(
     generated_code: str = "",
     generated_tests: str = "",
     error_logs: str = "",
-    error_analysis: Optional[ErrorAnalysis] = None,
+    error_analysis: Optional[dict] = None,
 ) -> GeneratedCode:
+    # Step arguments must be plain JSON values: durable execution checkpoints
+    # them, and it rejects model instances. The workflow passes model_dump(),
+    # and the model is rebuilt here.
+    if error_analysis is not None:
+        error_analysis = ErrorAnalysis.model_validate(error_analysis)
     try:
         if execution_status != "tests_failed":
             ctx.logger.info("🔨 Generating initial code from plan")

@@ -106,7 +106,7 @@ async def coding_agent_workflow(
                     generated_code=ctx.state.get("generated_code"),
                     generated_tests=ctx.state.get("generated_tests"),
                     error_logs=ctx.state.get("error_logs", ""),
-                    error_analysis=error_analysis,
+                    error_analysis=error_analysis.model_dump(),
                 )
 
                 generated_code = code_result.code
