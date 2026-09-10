@@ -93,7 +93,9 @@ async def coding_agent_workflow(
                     error_logs=ctx.state.get("error_logs", ""),
                 )
 
-                ctx.state.set("error_analysis", error_analysis)
+                # Workflow state is persisted as JSON, so store the plain dict;
+                # the model instance itself goes on to code_generator_node below.
+                ctx.state.set("error_analysis", error_analysis.model_dump())
                 ctx.logger.info(f"✅ Analysis complete: {error_analysis.analysis_summary[:100]}...")
 
                 code_result = await ctx.step(
