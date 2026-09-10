@@ -15,6 +15,7 @@ from coding_agent.models import (
     SyncResult,
     ExecutionResult,
     FinalResponse,
+    TestRepair,
 )
 from coding_agent.prompts import (
     PLANNER_SYSTEM_PROMPT,
@@ -29,6 +30,8 @@ from coding_agent.prompts import (
     ERROR_ANALYZER_USER_PROMPT,
     CODEFIXER_SYSTEM_PROMPT,
     CODEFIXER_USER_PROMPT,
+    TEST_REPAIR_SYSTEM_PROMPT,
+    TEST_REPAIR_USER_PROMPT,
 )
 from coding_agent.tools import E2BSandboxTools
 
@@ -61,6 +64,66 @@ def _validate_python_syntax(code: str) -> tuple[bool, str]:
         return True, ""
     except SyntaxError as e:
         return False, f"SyntaxError at line {e.lineno}: {e.msg}\n  {e.text or ''}"
+
+
+def _base_test_name(name: str) -> str:
+    """Reduce a pytest id such as ``test.py::test_x[P3Y-9.0]`` to ``test_x``."""
+    return name.split("::")[-1].split("[", 1)[0].strip()
+
+
+def _test_function_spans(code: str) -> dict[str, tuple[int, int]]:
+    """Map each test function to its (first, last) line, decorators included."""
+    spans: dict[str, tuple[int, int]] = {}
+    for node in ast.walk(ast.parse(code)):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name.startswith("test"):
+            first = min([d.lineno for d in node.decorator_list] + [node.lineno])
+            spans[node.name] = (first, node.end_lineno)
+    return spans
+
+
+def _test_sources(code: str) -> dict[str, str]:
+    lines = code.splitlines()
+    return {
+        name: "\n".join(lines[first - 1 : last]).strip()
+        for name, (first, last) in _test_function_spans(code).items()
+    }
+
+
+def _code_outside_tests(code: str) -> str:
+    """The file with every test function removed, blank lines ignored."""
+    lines = code.splitlines()
+    inside = {
+        i
+        for first, last in _test_function_spans(code).values()
+        for i in range(first - 1, last)
+    }
+    return "\n".join(l.rstrip() for i, l in enumerate(lines) if i not in inside and l.strip())
+
+
+def _check_test_repair(original: str, candidate: str, targets: set[str]) -> tuple[bool, str, list[str]]:
+    """Accept a repaired suite only if it corrects flagged tests and nothing else.
+
+    The guardrails live here, not only in the prompt, so the agent cannot make a
+    failing run pass by deleting, weakening or rewriting tests it wasn't asked to.
+    """
+    valid, err = _validate_python_syntax(candidate)
+    if not valid:
+        return False, f"repaired tests do not parse: {err}", []
+    try:
+        before, after = _test_sources(original), _test_sources(candidate)
+    except SyntaxError as e:
+        return False, f"original tests do not parse, so a repair cannot be verified: {e}", []
+    if set(before) != set(after):
+        removed, added = sorted(set(before) - set(after)), sorted(set(after) - set(before))
+        return False, f"test set changed (removed {removed}, added {added})", []
+    changed = {name for name in before if before[name] != after[name]}
+    if changed - targets:
+        return False, f"changed tests that were not flagged: {sorted(changed - targets)}", []
+    if _code_outside_tests(original) != _code_outside_tests(candidate):
+        return False, "changed code outside the flagged tests", []
+    if not changed:
+        return False, "no flagged test was changed", []
+    return True, "", sorted(changed)
 
 
 STDLIB_MODULES = frozenset(sys.stdlib_module_names)
@@ -426,11 +489,69 @@ async def error_analyzer_node(
         ctx.logger.info("✅ Error analysis complete")
         ctx.logger.debug(f"Failed tests: {len(analysis.failed_tests)}")
         ctx.logger.debug(f"Root causes: {len(analysis.root_causes)}")
+        if analysis.invalid_tests:
+            ctx.logger.warning(
+                f"⚠️ {len(analysis.invalid_tests)} test(s) contradict the task: "
+                + ", ".join(t.test_name for t in analysis.invalid_tests)
+            )
         return analysis
 
     except Exception as e:
         ctx.logger.error(f"Error in error_analyzer_node: {e}")
         raise
+
+
+@function(
+    name="test_repair_node",
+    retries=RetryPolicy(max_attempts=3),
+    backoff=BackoffPolicy(type=BackoffType.EXPONENTIAL),
+)
+async def test_repair_node(
+    ctx: FunctionContext,
+    task_description: str,
+    generated_tests: str,
+    invalid_tests: list[dict],
+) -> TestRepair:
+    """Correct the tests the error analysis found to contradict the task.
+
+    Rejected repairs keep the original tests: a wrong repair is worse than none.
+    """
+    targets = {_base_test_name(t["test_name"]) for t in invalid_tests}
+    ctx.logger.info(f"🩹 Repairing {len(targets)} test(s) with invalid expectations: {sorted(targets)}")
+    listing = "\n".join(
+        f"- `{t['test_name']}`: {t['reason']} Correct expectation: {t['correct_expectation']}"
+        for t in invalid_tests
+    )
+    try:
+        response = await lm.generate(
+            model="groq/qwen/qwen3.8-27b",
+            system_prompt=TEST_REPAIR_SYSTEM_PROMPT,
+            messages=[
+                {
+                    "role": "user",
+                    "content": TEST_REPAIR_USER_PROMPT.format(
+                        task_description=task_description,
+                        generated_tests=generated_tests,
+                        invalid_tests=listing,
+                    ),
+                },
+            ],
+            temperature=0,
+            max_tokens=MAX_OUTPUT_TOKENS,
+            response_format=GeneratedCode,
+        )
+        candidate = _clean_code(response.structured_output["code"])
+    except Exception as e:
+        ctx.logger.error(f"Error in test_repair_node: {e}")
+        raise
+
+    accepted, why, repaired = _check_test_repair(generated_tests, candidate, targets)
+    if not accepted:
+        ctx.logger.warning(f"🚫 Test repair rejected, keeping the original tests: {why}")
+        return TestRepair(accepted=False, code=generated_tests, repaired=[], reason=why)
+
+    ctx.logger.info(f"✅ Repaired tests: {repaired}")
+    return TestRepair(accepted=True, code=candidate, repaired=repaired, reason="")
 
 
 @function(
