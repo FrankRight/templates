@@ -2,7 +2,7 @@ module code-reviewer
 
 go 1.26.5
 
-require github.com/agnt5dev/sdk-go v0.7.1
+require github.com/agnt5dev/sdk-go v0.10.0
 
 require (
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
@@ -15,6 +15,8 @@ require (
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel v1.45.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.21.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.45.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.45.0 // indirect
 	go.opentelemetry.io/otel/log v0.21.0 // indirect
 	go.opentelemetry.io/otel/metric v1.45.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.45.0 // indirect
